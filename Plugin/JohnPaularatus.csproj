@@ -45,6 +45,12 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="FacilityMeltdown">
+      <HintPath>deps\FacilityMeltdown.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
   <!-- Allows us to use Rpc methods. See https://github.com/EvaisaDev/UnityNetcodePatcher -->
   <!-- This MSBuild option does not work in Visual Studio, using cli option for now
   <ItemGroup>

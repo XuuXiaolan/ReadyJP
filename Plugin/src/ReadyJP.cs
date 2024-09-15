@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using GameNetcodeStuff;
+using JohnPaularatus.Intergrations;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -163,6 +164,8 @@ public class ReadyJP : JohnPaularatusEnemyEnemyAI
         agent.speed = SPRINTING_SPEED;
         creatureAnimator.SetBool("GrabbingAppy", false);
         grabLungPropRoutine = null;
+        
+        MeltdownIntegration.TryCauseMeltdown();
     }
 
     private IEnumerator DoOpenDoor(DoorLock doorLock)
