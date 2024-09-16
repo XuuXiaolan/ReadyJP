@@ -1,4 +1,10 @@
-# 1.1.1
+# 1.2.0
+
+- JP's attack now happens more often.
+- Range for apparatus attack is harder to dodge now.
+- He can go outside to get the apparatus now.
+
+## 1.1.1
 
 - Fixed readme.
 
