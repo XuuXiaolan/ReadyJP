@@ -7,6 +7,7 @@ using JohnPaularatus.Intergrations;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace JohnPaularatusEnemy;
 public class ReadyJP : JohnPaularatusEnemyEnemyAI
@@ -82,21 +83,12 @@ public class ReadyJP : JohnPaularatusEnemyEnemyAI
     public override void Start() 
     {
         base.Start();
-        doorLocks = FindObjectsOfType<DoorLock>().ToList();
-        foreach (DoorLock doorLock in doorLocks)
-        {
-            // todo: set carving to false
-            if (doorLock.isLocked) doorLock.UnlockDoor();
-        }
-        
-        // todo: reference each door, unlock every door, then check if there's a viable path to the apparatus, if there is, lock all doors that were unlocked and use SmartAgetnNavigator to pass through those with partial pathing where you'd path to the door using partial paths, open it, then repeat.
         JPRandom = new System.Random(StartOfRound.Instance.randomMapSeed + 223);
     }
 
     public override void Update()
     {
         base.Update();
-
         if (isEnemyDead) return;
         if (!IsServer) return;
         randomSoundsTimer -= Time.deltaTime;
@@ -501,6 +493,12 @@ public class ReadyJP : JohnPaularatusEnemyEnemyAI
 
     public void WanderAroundForApparatusAnimEvent()
     {
+        doorLocks = FindObjectsOfType<DoorLock>().ToList();
+        foreach (DoorLock doorLock in doorLocks)
+        {
+            // todo: set carving to false
+            doorLock.GetComponent<NavMeshObstacle>().carving = false;
+        }
         List<LungProp> lungProp = new();
         lungProp.AddRange(FindObjectsByType<LungProp>(FindObjectsSortMode.InstanceID));
         lungProp = lungProp.Where(x => x.isLungDocked && x.isInFactory).ToList();
