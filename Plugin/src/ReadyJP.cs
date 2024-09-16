@@ -34,7 +34,7 @@ public class ReadyJP : JohnPaularatusEnemyEnemyAI
     public AudioClip[] FootstepSounds = null!;
 
     [NonSerialized] public bool meleeAttack = false;
-    private bool vanillaApparatus = false;
+    private static bool vanillaApparatus = false;
     private LungProp? targetLungProp;
     private bool holdingLungProp = false;
     private List<DoorLock> doorLocks = [];
@@ -503,7 +503,7 @@ public class ReadyJP : JohnPaularatusEnemyEnemyAI
         lungProp.AddRange(FindObjectsByType<LungProp>(FindObjectsSortMode.InstanceID));
         lungProp = lungProp.Where(x => x.isLungDocked && x.isInFactory).ToList();
 
-        if (lungProp.Count > 0)
+        if (lungProp.Count > 0 && !vanillaApparatus)
         {
             vanillaApparatus = true;
             targetLungProp = lungProp[JPRandom.Next(0, lungProp.Count)];
