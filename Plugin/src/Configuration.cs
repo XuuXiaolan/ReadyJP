@@ -5,7 +5,24 @@ using BepInEx.Configuration;
 
 namespace JohnPaularatus.Configs {
     public class JohnPaularatusConfig {
+        public ConfigEntry<string> ConfigJohnPaularatusSpawnWeights { get; private set; }
+        public ConfigEntry<int> ConfigJohnPaularatusMaxCount { get; private set; }
+        public ConfigEntry<int> ConfigJohnPaularatusPowerLevel { get; private set; }
+
         public JohnPaularatusConfig(ConfigFile configFile) {
+            ConfigJohnPaularatusPowerLevel = configFile.Bind("JohnPaularatus Options",
+                                                "John Paularatus | Power Level",
+                                                3,
+                                                "Power Level of the John Paularatus in the moon.");
+            ConfigJohnPaularatusSpawnWeights = configFile.Bind("JohnPaularatus Options",
+                                                "John Paularatus | Spawn Weights",
+                                                "All:66,Modded:66,Vanilla:66",
+                                                "Spawn Weight of the John Paularatus in moons.");
+
+            ConfigJohnPaularatusMaxCount = configFile.Bind("JohnPaularatus Options",
+                                                "John Paularatus | Max Count",
+                                                1,
+                                                "Max Count of the JohnPaularatus that spawn naturally in the moon.");
 			ClearUnusedEntries(configFile);
         }
         

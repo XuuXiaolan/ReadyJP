@@ -16,6 +16,7 @@ namespace JohnPaularatusEnemy;
 [BepInDependency(LethalLib.Plugin.ModGUID)] 
 public class Plugin : BaseUnityPlugin {
     internal static new ManualLogSource Logger;
+        public static JohnPaularatusConfig BoundConfig { get; private set; } // prevent from accidently overriding the config
         public static EnemyType JohnPaularatusEnemyType;
         public static GameObject UtilsPrefab;
         public static Dictionary<string, Item> samplePrefabs = [];
@@ -24,6 +25,7 @@ public class Plugin : BaseUnityPlugin {
     private void Awake() {
         Logger = base.Logger;
 
+        BoundConfig = new JohnPaularatusConfig(this.Config); // Create the config with the file from here.
         Assets.PopulateAssets();
         _harmony.PatchAll(Assembly.GetExecutingAssembly());
 
@@ -34,7 +36,7 @@ public class Plugin : BaseUnityPlugin {
         TerminalKeyword JohnPaularatusTerminalKeyword = Assets.MainAssetBundle.LoadAsset<TerminalKeyword>("ReadyJPTK");
         NetworkPrefabs.RegisterNetworkPrefab(JohnPaularatusEnemyType.enemyPrefab);
 
-        RegisterEnemyWithConfig("All:100", JohnPaularatusEnemyType, JohnPaularatusTerminalNode, JohnPaularatusTerminalKeyword, 2, 1);
+        RegisterEnemyWithConfig(BoundConfig.ConfigJohnPaularatusSpawnWeights.Value, JohnPaularatusEnemyType, JohnPaularatusTerminalNode, JohnPaularatusTerminalKeyword, BoundConfig.ConfigJohnPaularatusPowerLevel.Value, BoundConfig.ConfigJohnPaularatusMaxCount.Value);
 
         InitializeNetworkBehaviours();
         Logger.LogInfo($"Plugin {JohnPaularatus.PluginInfo.PLUGIN_GUID} is loaded!");

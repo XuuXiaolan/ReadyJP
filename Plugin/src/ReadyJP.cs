@@ -89,6 +89,7 @@ public class ReadyJP : JohnPaularatusEnemyEnemyAI
             if (doorLock.isLocked) doorLock.UnlockDoor();
         }
         
+        // todo: reference each door, unlock every door, then check if there's a viable path to the apparatus, if there is, lock all doors that were unlocked and use SmartAgetnNavigator to pass through those with partial pathing where you'd path to the door using partial paths, open it, then repeat.
         JPRandom = new System.Random(StartOfRound.Instance.randomMapSeed + 223);
     }
 
