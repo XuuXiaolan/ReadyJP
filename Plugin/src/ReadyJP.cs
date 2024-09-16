@@ -361,7 +361,15 @@ public class ReadyJP : JohnPaularatusEnemyEnemyAI
     {
         if (targetLungProp != null)
         {
-            agent.SetDestination(targetLungProp.transform.position);
+            if ((isOutside && !targetLungProp.isInFactory) || (!isOutside && targetLungProp.isInFactory))
+            {
+                agent.SetDestination(targetLungProp.transform.position);
+            }
+            else if ((isOutside && targetLungProp.isInFactory) || (!isOutside && !targetLungProp.isInFactory))
+            {
+                GoThroughEntrance();
+                return;
+            }
             if (targetLungProp.isHeld)
             {
                 foreach (var player in StartOfRound.Instance.allPlayerScripts)
@@ -390,9 +398,9 @@ public class ReadyJP : JohnPaularatusEnemyEnemyAI
             SetDestinationToPosition(targetPlayer.transform.position);
         }
 
-        if ((timeSinceSpinAttack >= (MeleeAnimation.length+1f)) && holdingLungProp && targetPlayer != null)
+        if ((timeSinceSpinAttack >= (MeleeAnimation.length+0.5f)) && holdingLungProp && targetPlayer != null)
         {
-            if (Vector3.Distance(transform.position, targetPlayer.transform.position) <= 3.2f)
+            if (Vector3.Distance(transform.position, targetPlayer.transform.position) <= 3f)
             {
                 timeSinceSpinAttack = 0;
                 networkAnimator.SetTrigger("DoMelee");

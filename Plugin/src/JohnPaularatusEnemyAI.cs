@@ -187,6 +187,7 @@ public abstract class JohnPaularatusEnemyEnemyAI : EnemyAI
     }
 
     public void GoThroughEntrance() {
+        if (!IsServer) return;
         var insideEntrancePosition = RoundManager.FindMainEntrancePosition(true, false);
         var outsideEntrancePosition = RoundManager.FindMainEntrancePosition(true, true);
         if (isOutside) {
