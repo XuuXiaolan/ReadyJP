@@ -234,40 +234,27 @@ public class ReadyJP : JohnPaularatusEnemyEnemyAI
     [ClientRpc]
     private void PlaySpecificSoundClientRpc(int index)
     {
-        switch (index)
+        AudioClip newClip = index switch
         {
-            case 0:
-                creatureVoice.PlayOneShot(IdleDanceSound);
-                break;
-            case 1:
-                creatureVoice.PlayOneShot(AdmireSelfSound);
-                break;
-            case 2:
-                creatureVoice.PlayOneShot(JumpingJacksSound);
-                break;
-            case 3:
-                creatureVoice.PlayOneShot(PushUpSound);
-                break;
-            case 4:
-                creatureVoice.PlayOneShot(ArmCurlSound);
-                break;
-            case 5:
-                creatureVoice.PlayOneShot(BigWalkingSound);
-                break;
-            case 6:
-                creatureVoice.PlayOneShot(Death1Sound);
-                break;
-            case 7:
-                creatureVoice.PlayOneShot(Death2Sound);
-                break;
-            case 8:
-                creatureVoice.PlayOneShot(AttackSound);
-                meleeAttack = true;
-                StartCoroutine(ResetMeleeAttack());
-                break;
-            case 9:
-                creatureVoice.PlayOneShot(BegForApparatusSound);
-                break;
+            0 => IdleDanceSound,
+            1 => AdmireSelfSound,
+            2 => JumpingJacksSound,
+            3 => PushUpSound,
+            4 => ArmCurlSound,
+            5 => BigWalkingSound,
+            6 => Death1Sound,
+            7 => Death2Sound,
+            8 => AttackSound,
+            9 => BegForApparatusSound,
+            _ => null
+        };
+
+        creatureVoice.PlayOneShot(newClip);
+
+        if (index == 8)
+        {
+            meleeAttack = true;
+            StartCoroutine(ResetMeleeAttack());
         }
     }
 
@@ -476,8 +463,15 @@ public class ReadyJP : JohnPaularatusEnemyEnemyAI
     [ServerRpc(RequireOwnership = false)]
     private void SetTargetLungPropServerRpc()
     {
-        GameObject[] insideAINodes = GameObject.FindGameObjectsWithTag("AINode");
-        NetworkObjectReference lungPropRef = JohnPaularatusUtils.Instance.SpawnScrap(StartOfRound.Instance.allItemsList.itemsList.Where(x => x.itemName == "Apparatus").First(), RoundManager.Instance.GetRandomNavMeshPositionInBoxPredictable(insideAINodes[JPRandom.Next(0, insideAINodes.Length)].transform.position, 4, default, JPRandom), false, true, 0);
+        GameObject[] insideAINodes = RoundManager.Instance.insideAINodes;
+        NetworkObjectReference lungPropRef = JohnPaularatusUtils.Instance.SpawnScrap(
+                                                                                    StartOfRound.Instance.allItemsList.itemsList.Where(x => x.itemName == "Apparatus").First(), 
+                                                                                    RoundManager.Instance.GetRandomNavMeshPositionInBoxPredictable(insideAINodes[JPRandom.Next(0, insideAINodes.Length)].transform.position, 
+                                                                                    4, default, JPRandom), 
+                                                                                    false, 
+                                                                                    true, 
+                                                                                    0
+                                                                                    );
         GameObject lungPropGameObject = (GameObject)lungPropRef;
         SetTargetLungPropClientRpc(new NetworkObjectReference(lungPropGameObject));
     }
@@ -504,8 +498,7 @@ public class ReadyJP : JohnPaularatusEnemyEnemyAI
         doorLocks = FindObjectsOfType<DoorLock>().ToList();
         foreach (DoorLock doorLock in doorLocks)
         {
-            // todo: set carving to false
-            doorLock.GetComponent<NavMeshObstacle>().carving = false;
+            if (doorLock.isLocked) doorLock.GetComponent<NavMeshObstacle>().carving = false;
         }
         List<LungProp> lungProp = new();
         lungProp.AddRange(FindObjectsByType<LungProp>(FindObjectsSortMode.InstanceID));

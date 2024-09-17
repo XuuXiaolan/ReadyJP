@@ -10,6 +10,7 @@ using LethalLib.Modules;
 using JohnPaularatus;
 using JohnPaularatus.Configs;
 using UnityEngine;
+using LethalLib.Extras;
 
 namespace JohnPaularatusEnemy;
 [BepInPlugin(JohnPaularatus.PluginInfo.PLUGIN_GUID, JohnPaularatus.PluginInfo.PLUGIN_NAME, JohnPaularatus.PluginInfo.PLUGIN_VERSION)]
@@ -18,6 +19,7 @@ public class Plugin : BaseUnityPlugin {
     internal static new ManualLogSource Logger;
         public static JohnPaularatusConfig BoundConfig { get; private set; } // prevent from accidently overriding the config
         public static EnemyType JohnPaularatusEnemyType;
+        public static UnlockableItemDef JohnPaularatusUnlockableItem;
         public static GameObject UtilsPrefab;
         public static Dictionary<string, Item> samplePrefabs = [];
         private readonly Harmony _harmony = new Harmony(JohnPaularatus.PluginInfo.PLUGIN_GUID);
@@ -32,12 +34,18 @@ public class Plugin : BaseUnityPlugin {
         UtilsPrefab = Assets.MainAssetBundle.LoadAsset<GameObject>("JohnPaularatusUtils");
 
         JohnPaularatusEnemyType = Assets.MainAssetBundle.LoadAsset<EnemyType>("ReadyJPObj");
+        Utilities.FixMixerGroups(JohnPaularatusEnemyType.enemyPrefab);
         TerminalNode JohnPaularatusTerminalNode = Assets.MainAssetBundle.LoadAsset<TerminalNode>("ReadyJPTN");
         TerminalKeyword JohnPaularatusTerminalKeyword = Assets.MainAssetBundle.LoadAsset<TerminalKeyword>("ReadyJPTK");
         NetworkPrefabs.RegisterNetworkPrefab(JohnPaularatusEnemyType.enemyPrefab);
 
         RegisterEnemyWithConfig(BoundConfig.ConfigJohnPaularatusSpawnWeights.Value, JohnPaularatusEnemyType, JohnPaularatusTerminalNode, JohnPaularatusTerminalKeyword, BoundConfig.ConfigJohnPaularatusPowerLevel.Value, BoundConfig.ConfigJohnPaularatusMaxCount.Value);
 
+        JohnPaularatusUnlockableItem = Assets.SecondaryMainAssetBundle.LoadAsset<UnlockableItemDef>("ReadyJPUnlockableItem");
+        Utilities.FixMixerGroups(JohnPaularatusUnlockableItem.unlockable.prefabObject);
+        NetworkPrefabs.RegisterNetworkPrefab(JohnPaularatusUnlockableItem.unlockable.prefabObject);
+        LethalLib.Modules.Unlockables.RegisterUnlockable(JohnPaularatusUnlockableItem, 3999, StoreType.Decor);
+        
         InitializeNetworkBehaviours();
         Logger.LogInfo($"Plugin {JohnPaularatus.PluginInfo.PLUGIN_GUID} is loaded!");
     }
@@ -111,12 +119,19 @@ public class Plugin : BaseUnityPlugin {
 
 public static class Assets {
     public static AssetBundle MainAssetBundle = null;
+    public static AssetBundle SecondaryMainAssetBundle = null;
     public static void PopulateAssets() {
         string sAssemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         MainAssetBundle = AssetBundle.LoadFromFile(Path.Combine(sAssemblyLocation, "readyjpassets"));
         if (MainAssetBundle == null) {
             Plugin.Logger.LogError("Failed to load custom assets.");
+            return;
+        }
+
+        SecondaryMainAssetBundle = AssetBundle.LoadFromFile(Path.Combine(sAssemblyLocation, "secondaryreadyjpassets"));
+        if (SecondaryMainAssetBundle == null) {
+            Plugin.Logger.LogError("Failed to load secondary custom assets.");
             return;
         }
     }

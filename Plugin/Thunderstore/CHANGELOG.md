@@ -1,4 +1,8 @@
-# 1.2.0
+# 1.3.0
+
+- Added cardboard cutout costing 4k.
+
+## 1.2.0
 
 - JP's attack now happens more often.
 - Range for apparatus attack is harder to dodge now.

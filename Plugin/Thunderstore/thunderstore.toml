@@ -26,6 +26,10 @@ source = "../../UnityProject/AssetBundles/StandaloneWindows/readyjpassets"
 target = "plugins/JohnPaularatus/"
 
 [[build.copy]]
+source = "../../UnityProject/AssetBundles/StandaloneWindows/secondaryreadyjpassets"
+target = "plugins/JohnPaularatus/"
+
+[[build.copy]]
 source = "./CHANGELOG.md"
 target = "/"
 
