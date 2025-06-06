@@ -1,4 +1,8 @@
-# 1.3.0
+# 1.4.0
+
+- Updated for v70
+
+## 1.3.0
 
 - Added cardboard cutout costing 4k.
 
